@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tailwindcss/dist/tailwind.min.css">
+</head>
+<body class="bg-gray-50">
+    <div class="p-4 flex justify-between bg-white shadow">
+        <h1 class="text-xl font-bold text-blue-700">Employee Dashboard</h1>
+        <a href="/logout" class="bg-blue-600 text-white px-4 py-2 rounded">Logout</a>
+    </div>
+    <div class="p-6 grid gap-6 md:grid-cols-2">
+        <div class="bg-white p-6 rounded-xl shadow">
+            <h2 class="text-lg font-semibold mb-4">Attendance</h2>
+            <button onclick="sendLocation('checkin')" class="bg-green-600 text-white px-6 py-2 rounded">Check In</button>
+            <button onclick="sendLocation('checkout')" class="bg-red-600 text-white px-6 py-2 rounded ml-4">Check Out</button>
+            <p id="status" class="mt-4 text-sm text-gray-500"></p>
+        </div>
+        <div class="bg-white p-6 rounded-xl shadow">
+            <h2 class="text-lg font-semibold mb-4">Profile</h2>
+            <p>Name: Vadugu vishnu</p>
+            <p>Email: 23H51A05BB@cmrcet.ac.in</p>
+        </div>
+    </div>
+
+    <script>
+        function sendLocation(action) {
+          if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(function(position) {
+              fetch(`/${action}`, {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                  latitude: position.coords.latitude,
+                  longitude: position.coords.longitude
+                })
+              })
+              .then(response => response.text())
+              .then(data => {
+                document.getElementById('status').textContent = data;
+              });
+            });
+          } else {
+            document.getElementById('status').textContent = "Geolocation is not supported by this browser.";
+          }
+        }
+      </script>
+      
